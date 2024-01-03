@@ -18,6 +18,23 @@ def three_vowels(my_string):
         i+=1
     return(k==3)
 
+def three_vow(my_str,k):
+    car=my_str[0]
+    car_vow = car in ['a','e','i','o','u']
+    l=len(my_str)==1
+    if car_vow:
+        if k==2:
+            return  True
+        elif l:
+            return False
+        else:
+            return three_vow(my_str[1:], k+1)
+    elif l:
+        return False
+    else:
+        return three_vow(my_str[1:], k)
+
+
 def double_letter(my_string):
     dl = False
     i = 0
@@ -28,6 +45,15 @@ def double_letter(my_string):
         else:
             i+=1
     return dl
+
+def double_let(my_str):
+    l=len(my_str)
+    if l==1:
+        return False
+    elif my_str[0] == my_str[1]:
+        return True
+    else:
+        return double_let(my_str[1:])
 
 def forbiden_str(my_string):
     fs = False
@@ -40,10 +66,25 @@ def forbiden_str(my_string):
             i+=1
     return fs
 
+def forbi_str(my_str):
+    l=len(my_str)
+    if l==1:
+        return False
+    elif my_str[0] + my_str[1] in ['ab','cd','pq','xy']:
+        return True
+    else:
+        return forbi_str(my_str[1:])
+
 def nice1(my_string):
     tv = three_vowels(my_string)
     dl = double_letter(my_string)
     fs = not forbiden_str(my_string)
+    return (tv and dl and fs)
+
+def nice1a(my_str):
+    tv = three_vow(my_str,0)
+    dl = double_let(my_str)
+    fs = not forbi_str(my_str)
     return (tv and dl and fs)
 
 def count_nice1(my_file):
@@ -53,6 +94,16 @@ def count_nice1(my_file):
             if nice1(l):
                 count+=1
     return count
+
+def count_nice1a(my_file):
+    count=0
+    with open(my_file,"r") as fichier:
+        for l in fichier:
+            if nice1a(l):
+                count+=1
+    return count
+
+
 
 def double_double(my_string):
     l=len(my_string)
