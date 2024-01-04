@@ -6,10 +6,12 @@ Created on Tue Jan  2 16:20:48 2024
 @author: fberal
 """
 
-import numpy as np
+import time
 
-lights_array = np.zeros( (1000, 1000) )
+start = time.time()
 
+"""
+Exemple Ben
 class Test:
     def __init__(self, tup):
         self.counter = 0
@@ -20,110 +22,81 @@ class Test:
         self.counter += max(0, prev + value)
         self.lights_array[x][y] = max(0, prev + value)
         
+
 test = Test((1000, 1000))
-test.toggle(x, y)
+test.change_value(2, 3)
 print(test.counter)
+"""
 
-def turn_on(my_array,my_list):
-    x0 = my_list[0]
-    x1 = my_list[2]+1
-    y0 = my_list[1]
-    y1 = my_list[3]+1
-    for x in range(x0,x1):
-        for y in range(y0,y1):
-            my_array[x][y]=1
+class light_grid:
+    def __init__(self, size):
+        self.size = size
+        
+    def turn_on(self, begin, end):
+        for x in range(begin[0], end[0]+1):
+            for y in range(begin[1], end[1]+1):
+                place = x * self.size + y
+                self.grid[place] = 1
+    
+    def turn_off(self, begin, end):
+        for x in range(begin[0], end[0]+1):
+            for y in range(begin[1], end[1]+1):
+                place = x * self.size + y
+                self.grid[place] = 0
+    
+    def toggle(self, begin, end):
+        for x in range(begin[0], end[0]+1):
+            for y in range(begin[1], end[1]+1):
+                place = x * self.size + y
+                self.grid[place] = (self.grid[place] + 1) % 2
+                
+    def somme(self):
+        return sum(self.grid)
+                
+class instruction:    
+    def __init__(self,liste):
+        self.all = liste
+        self.length = len(liste)
+    
+    def begin(self):
+        if self.length == 4:
+            k=1
+        else:
+            k=2
+        return [int(d) for d in self.all[k].split(",")]
 
-def turn_off(my_array,my_list):
-    x0 = my_list[0]
-    x1 = my_list[2]+1
-    y0 = my_list[1]
-    y1 = my_list[3]+1
-    for x in range(x0,x1):
-        for y in range(y0,y1):
-            my_array[x][y]=0
-
-def toggle(my_array,my_list):
-    x0 = my_list[0]
-    x1 = my_list[2]+1
-    y0 = my_list[1]
-    y1 = my_list[3]+1
-    for x in range(x0,x1):
-        for y in range(y0,y1):
-            if my_array[x][y]==0:
-                my_array[x][y]=1
-            else:
-                my_array[x][y]=0
-
-
-def turn_on1(my_array,my_list):
-    x0 = my_list[0]
-    x1 = my_list[2]+1
-    y0 = my_list[1]
-    y1 = my_list[3]+1
-    for x in range(x0,x1):
-        for y in range(y0,y1):
-            my_array[x][y]+=1
-
-def turn_off1(my_array,my_list):
-    x0 = my_list[0]
-    x1 = my_list[2]+1
-    y0 = my_list[1]
-    y1 = my_list[3]+1
-    for x in range(x0,x1):
-        for y in range(y0,y1):
-            my_array[x][y]=max(0,my_array[x][y]-1)
-
-def toggle1(my_array,my_list):
-    x0 = my_list[0]
-    x1 = my_list[2]+1
-    y0 = my_list[1]
-    y1 = my_list[3]+1
-    for x in range(x0,x1):
-        for y in range(y0,y1):
-            my_array[x][y]+=2
-
-def get_begin_end(my_list):
-    if my_list[0] == 'turn':
-        begin = [int(d) for d in my_list[2].split(",")]
-        end = [int(d) for d in my_list[4].split(",")]
-    else:
-        begin = [int(d) for d in my_list[1].split(",")]
-        end = [int(d) for d in my_list[3].split(",")]
-    return begin + end
+    def end(self):
+        if self.length == 4:
+            k=3
+        else:
+            k=4
+        return [int(d) for d in self.all[k].split(",")]
+    
+size = 1000
+            
+santa = light_grid(size)
+santa.grid = [0 for i in range(size * size)]
 
 def lights(fichier):
     with open(fichier, "r") as fichiertxt:
         for l in fichiertxt:
             ligne=[str(d) for d in l.split(" ")]
-            b_e = get_begin_end(ligne)
-            if ligne[0] == 'turn':
-                if ligne[1] == 'on':
-                    turn_on(lights_array,b_e)
-                else:
-                    turn_off(lights_array,b_e)
+            instr = instruction(ligne)
+            if len(ligne) == 4:
+                santa.toggle(instr.begin(), instr.end())
+            elif ligne[1] == 'on':
+                santa.turn_on(instr.begin(), instr.end())
             else:
-                toggle(lights_array,b_e)
-    return(np.sum(lights_array))
+                santa.turn_off(instr.begin(), instr.end())
+    global before_return
+    before_return = time.time()
+    return santa.somme()
 
+my_file = "input-2015_06.txt"
 
-def lights1(fichier):
-    with open(fichier, "r") as fichiertxt:
-        for l in fichiertxt:
-            ligne=[str(d) for d in l.split(" ")]
-            b_e = get_begin_end(ligne)
-            if ligne[0] == 'turn':
-                if ligne[1] == 'on':
-                    turn_on1(lights_array,b_e)
-                else:
-                    turn_off1(lights_array,b_e)
-            else:
-                toggle1(lights_array,b_e)
-    return(np.sum(lights_array))
+print(lights(my_file))
 
+end = time.time()
 
-
-
-
-
-
-
+print(before_return - start)
+print(end-start)

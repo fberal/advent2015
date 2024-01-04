@@ -7,6 +7,9 @@ Created on Tue Jan  2 16:20:48 2024
 """
 
 import numpy as np
+import time
+
+start = time.time()
 
 lights_array = np.zeros( (1000, 1000) )
 
@@ -89,6 +92,8 @@ def lights(fichier):
                     turn_off(lights_array,b_e)
             else:
                 toggle(lights_array,b_e)
+    global before_return
+    before_return = time.time()
     return(np.sum(lights_array))
 
 
@@ -106,9 +111,19 @@ def lights1(fichier):
                 toggle1(lights_array,b_e)
     return(np.sum(lights_array))
 
+before_run = time.time()
+
+print(before_run - start)
 
 
+my_file = "input-2015_06.txt"
 
+print(lights(my_file))
+
+end = time.time()
+
+print(before_return - start)
+print(end-start)
 
 
 
