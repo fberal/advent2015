@@ -6,7 +6,7 @@ Quel est le nombre total de possibilités de construire le mur ?
 Objectif : donner l'algo, idéalement en moins d'une heure
 
 Exemple :
-Mur 1 par 5 : 2 possibilités : 2 et 3 // 3 et 2
+Mur 1 par 5 : 2 possibilités : 2-3 // 3-2
 Mur 1 par 6 : 2 possibilités : 2-2-2 // 3-3
 Mur 2 par 6 : 2 possibilités : 2-2-2+3-3 // 3-3+2-2-2
 Mur 1 par 8 : 4 possibilités : 2-2-2-2 // 2-3-3 // 3-2-3 // 3-3-2
